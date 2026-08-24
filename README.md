@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://github.com/wydbot/wydbot/actions/workflows/ci.yml"><img src="https://github.com/wydbot/wydbot/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/wydbot2/wydbot/actions/workflows/ci.yml"><img src="https://github.com/wydbot2/wydbot/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.electronjs.org/"><img src="https://img.shields.io/badge/Electron-42-blue" alt="Electron"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%E2%89%A520-brightgreen" alt="Node"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.9-blue" alt="TypeScript"></a>
@@ -66,7 +66,7 @@ distros (glibc ≥ 2.31).
 ## Quick start
 
 ```bash
-git clone https://github.com/wydbot/wydbot.git
+git clone https://github.com/wydbot2/wydbot.git
 cd wydbot
 npm install
 
