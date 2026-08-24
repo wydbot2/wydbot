@@ -1,0 +1,6 @@
+out/
+node_modules/
+dist/
+**/*.generated.ts
+**/*.generated.json
+tools/re-kg/snapshots/re-kg-snapshot.json

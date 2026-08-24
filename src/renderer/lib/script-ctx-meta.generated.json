@@ -1,0 +1,2472 @@
+{
+  "schemaVersion": 1,
+  "sourcePath": "src/renderer/lib/script-ctx.ts",
+  "generatedAt": "2026-08-24T16:42:06.867Z",
+  "interfaces": [
+    {
+      "name": "Item",
+      "jsDoc": {
+        "description": "Um item do personagem (equipamento ou do inventário).",
+        "params": {},
+        "returns": null,
+        "tags": []
+      },
+      "members": [
+        {
+          "kind": "property",
+          "name": "slot",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Posição do item no equipamento ou na bolsa (`0..14`).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "number"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "bag",
+          "readonly": true,
+          "optional": true,
+          "jsDoc": {
+            "description": "Bolsa do item (`0..3`). Só em itens do inventário.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "number"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "itemId",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "ID do item.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "number"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "name",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Nome do item, já com sufixos como `+N` e `[G]`.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "string"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "refineLevel",
+          "readonly": true,
+          "optional": true,
+          "jsDoc": {
+            "description": "Nível de refino (`+1..+16`).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "number"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "stackCount",
+          "readonly": true,
+          "optional": true,
+          "jsDoc": {
+            "description": "Quantidade na pilha (`1..500`).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "number"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "immovable",
+          "readonly": true,
+          "optional": true,
+          "jsDoc": {
+            "description": "Item preso (valores na tabela abaixo da página).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "union",
+            "variants": [
+              {
+                "kind": "literal",
+                "value": 1
+              },
+              {
+                "kind": "literal",
+                "value": 2
+              },
+              {
+                "kind": "literal",
+                "value": 3
+              }
+            ]
+          }
+        },
+        {
+          "kind": "property",
+          "name": "useKind",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Como o jogo reage ao usar o item (valores na tabela abaixo da página).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "union",
+            "variants": [
+              {
+                "kind": "literal",
+                "value": "direto"
+              },
+              {
+                "kind": "literal",
+                "value": "pergaminho"
+              },
+              {
+                "kind": "literal",
+                "value": "popup"
+              },
+              {
+                "kind": "literal",
+                "value": "painel"
+              },
+              {
+                "kind": "literal",
+                "value": "equipamento"
+              },
+              {
+                "kind": "literal",
+                "value": "bloqueado"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "method",
+          "name": "use",
+          "optional": true,
+          "jsDoc": {
+            "description": "Usa o item (consome), disparado depois que o script termina. Só existe em\nconsumíveis de uso direto (`useKind === 'direto'`).",
+            "params": {},
+            "returns": null,
+            "tags": [
+              {
+                "tag": "example",
+                "text": "```js\n// Usa o melhor Pergaminho da Água(M) disponível, do LV8 ao LV1\nconst inv = ctx.player.inventory;\nif (inv.has(784)) inv.find(784)?.use();\nelse if (inv.has(783)) inv.find(783)?.use();\n// …\nelse if (inv.has(777)) inv.find(777)?.use();\n```"
+              }
+            ]
+          },
+          "params": [],
+          "returns": {
+            "kind": "primitive",
+            "name": "void"
+          }
+        },
+        {
+          "kind": "method",
+          "name": "delete",
+          "optional": true,
+          "jsDoc": {
+            "description": "Apaga o item da bolsa (joga fora). **O efeito só acontece depois que o\nscript termina**, não na hora da chamada — igual a `use()`. Enquanto o\nscript ainda roda, o item continua visível no inventário.\n\nSó existe em itens do inventário (bolsas), nunca em equipamentos.\nAlguns itens não podem ser apagados pelo jogo; nesse caso o item volta\npara a bolsa sozinho. Se o script chamar `delete()` mais de uma vez,\nvale a **última** chamada (só um item é apagado por execução).",
+            "params": {},
+            "returns": null,
+            "tags": [
+              {
+                "tag": "example",
+                "text": "```js\n// Apaga o primeiro Selo Élfico (id 2490) da bolsa\nconst lixo = ctx.player.inventory.find(2490);\nif (lixo) lixo.delete();\n```"
+              }
+            ]
+          },
+          "params": [],
+          "returns": {
+            "kind": "primitive",
+            "name": "void"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "stats",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Os atributos do item, como no tooltip. Cada um traz `id`, `label` e `value`.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "array",
+            "readonly": true,
+            "element": {
+              "kind": "object",
+              "members": [
+                {
+                  "kind": "property",
+                  "name": "id",
+                  "readonly": true,
+                  "optional": false,
+                  "jsDoc": {
+                    "description": "Identificador do atributo (ex.: `\"damage\"`, `\"hp\"`).",
+                    "params": {},
+                    "returns": null,
+                    "tags": []
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "name": "string"
+                  }
+                },
+                {
+                  "kind": "property",
+                  "name": "label",
+                  "readonly": true,
+                  "optional": false,
+                  "jsDoc": {
+                    "description": "Nome do atributo em português, igual ao tooltip.",
+                    "params": {},
+                    "returns": null,
+                    "tags": []
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "name": "string"
+                  }
+                },
+                {
+                  "kind": "property",
+                  "name": "value",
+                  "readonly": true,
+                  "optional": false,
+                  "jsDoc": {
+                    "description": "Valor numérico do atributo.",
+                    "params": {},
+                    "returns": null,
+                    "tags": []
+                  },
+                  "type": {
+                    "kind": "primitive",
+                    "name": "number"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "kind": "property",
+          "name": "scroll",
+          "readonly": true,
+          "optional": true,
+          "jsDoc": {
+            "description": "Só existe em pergaminhos (`useKind === 'pergaminho'`). Na caça,\n`destinations` lista os lugares; em retorno/teleporte/portal, vem vazia.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "object",
+            "members": [
+              {
+                "kind": "property",
+                "name": "destinations",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Lugares para onde o pergaminho pode levar. Nomes podem repetir — passe o objeto inteiro para `use`, nunca só o nome.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "array",
+                  "readonly": true,
+                  "element": {
+                    "kind": "object",
+                    "members": [
+                      {
+                        "kind": "property",
+                        "name": "name",
+                        "readonly": true,
+                        "optional": false,
+                        "jsDoc": {
+                          "description": "Nome do local (pode repetir).",
+                          "params": {},
+                          "returns": null,
+                          "tags": []
+                        },
+                        "type": {
+                          "kind": "primitive",
+                          "name": "string"
+                        }
+                      },
+                      {
+                        "kind": "property",
+                        "name": "x",
+                        "readonly": true,
+                        "optional": false,
+                        "jsDoc": {
+                          "description": "Posição X do destino, em tiles.",
+                          "params": {},
+                          "returns": null,
+                          "tags": []
+                        },
+                        "type": {
+                          "kind": "primitive",
+                          "name": "number"
+                        }
+                      },
+                      {
+                        "kind": "property",
+                        "name": "y",
+                        "readonly": true,
+                        "optional": false,
+                        "jsDoc": {
+                          "description": "Posição Y do destino, em tiles.",
+                          "params": {},
+                          "returns": null,
+                          "tags": []
+                        },
+                        "type": {
+                          "kind": "primitive",
+                          "name": "number"
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "method",
+                "name": "use",
+                "optional": false,
+                "jsDoc": {
+                  "description": "Usa o pergaminho. O teleporte dispara depois que o script termina e\nleva cerca de 5 segundos. Na caça, passe um destino de\n`scroll.destinations`; no retorno/portal, chame sem argumento.",
+                  "params": {
+                    "destino": "Destino vindo de `scroll.destinations` (só na caça). Omita no retorno/portal."
+                  },
+                  "returns": null,
+                  "tags": [
+                    {
+                      "tag": "example",
+                      "text": "```js\nconst pergaminho = ctx.player.inventory.find(3437);\nif (pergaminho?.scroll) {\n  const pos = pergaminho.scroll.destinations.find((pos) => pos.name == 'Local do Guerreiro Amon');\n  pergaminho.scroll.use(pos);\n} else {\n  throw new Error('Está sem pergaminho de caça Nipple');\n}\n```"
+                    }
+                  ]
+                },
+                "params": [
+                  {
+                    "name": "destino",
+                    "optional": true,
+                    "type": {
+                      "kind": "object",
+                      "members": [
+                        {
+                          "kind": "property",
+                          "name": "x",
+                          "readonly": false,
+                          "optional": false,
+                          "jsDoc": null,
+                          "type": {
+                            "kind": "primitive",
+                            "name": "number"
+                          }
+                        },
+                        {
+                          "kind": "property",
+                          "name": "y",
+                          "readonly": false,
+                          "optional": false,
+                          "jsDoc": null,
+                          "type": {
+                            "kind": "primitive",
+                            "name": "number"
+                          }
+                        }
+                      ]
+                    },
+                    "description": "Destino vindo de `scroll.destinations` (só na caça). Omita no retorno/portal."
+                  }
+                ],
+                "returns": {
+                  "kind": "primitive",
+                  "name": "void"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ItemShort",
+      "jsDoc": {
+        "description": "Uma peça visível de uma entidade: só id e nome.",
+        "params": {},
+        "returns": null,
+        "tags": []
+      },
+      "members": [
+        {
+          "kind": "property",
+          "name": "itemId",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Número (id) do item.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "number"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "name",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Nome do item. Pode vir vazio no modelo do corpo de um monstro.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Entidade",
+      "jsDoc": {
+        "description": "Um NPC, monstro ou outro jogador no mapa.",
+        "params": {},
+        "returns": null,
+        "tags": []
+      },
+      "members": [
+        {
+          "kind": "property",
+          "name": "index",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Identificador da entidade. Vale só enquanto você está conectado: muda a cada novo login.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "number"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "name",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Nome da entidade.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "primitive",
+            "name": "string"
+          }
+        },
+        {
+          "kind": "property",
+          "name": "position",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Posição da entidade no mapa atual, em tiles (`x`, `y`).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "object",
+            "members": [
+              {
+                "kind": "property",
+                "name": "x",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": null,
+                "type": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              },
+              {
+                "kind": "property",
+                "name": "y",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": null,
+                "type": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "property",
+          "name": "appearance",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "O visual da entidade: o modelo do corpo e as peças que ela usa. Os slots\nsão os mesmos de `ctx.player.equipment`.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "object",
+            "members": [
+              {
+                "kind": "property",
+                "name": "body",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Modelo do corpo (que tipo de criatura ou NPC é).",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "helmet",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Capacete à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "armor",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Peitoral à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "pants",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Calça à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "gloves",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Luvas à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "boots",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Botas à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "weapon",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Arma à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "offhand",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Mão secundária à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "earring",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Brinco à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "special2",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Especial 2 à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "special1",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Especial 1 à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "special3",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Especial 3 à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "costume",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Traje à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "fairy",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Fada à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "mount",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Montaria à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "cape",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Capa à vista.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "union",
+                  "variants": [
+                    {
+                      "kind": "reference",
+                      "name": "ItemShort",
+                      "typeArgs": []
+                    },
+                    {
+                      "kind": "primitive",
+                      "name": "null"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "method",
+          "name": "isWithin",
+          "optional": false,
+          "jsDoc": {
+            "description": "Se a entidade está a até `tiles` passos do personagem.",
+            "params": {
+              "tiles": "Distância máxima, em tiles (passos)."
+            },
+            "returns": null,
+            "tags": [
+              {
+                "tag": "example",
+                "text": "```js\nconst lan = ctx.npcs.find((n) => n.name === 'LAN A');\nif (lan?.isWithin(5)) ctx.macro.goToMarker('ENTER_LAN');\n```"
+              }
+            ]
+          },
+          "params": [
+            {
+              "name": "tiles",
+              "optional": false,
+              "type": {
+                "kind": "primitive",
+                "name": "number"
+              },
+              "description": "Distância máxima, em tiles (passos)."
+            }
+          ],
+          "returns": {
+            "kind": "primitive",
+            "name": "boolean"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ScriptCtx",
+      "jsDoc": {
+        "description": "O objeto `ctx` que seu macro usa para ler o jogo e tomar decisões.\n\nLeituras de `player`, `npcs`, `monsters` e `otherPlayers` são sempre\natualizadas: cada acesso traz o estado do jogo naquele instante.",
+        "params": {},
+        "returns": null,
+        "tags": []
+      },
+      "members": [
+        {
+          "kind": "property",
+          "name": "player",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Estado do seu personagem.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "object",
+            "members": [
+              {
+                "kind": "property",
+                "name": "hp",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "HP atual.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              },
+              {
+                "kind": "property",
+                "name": "maxHp",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "HP máximo.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              },
+              {
+                "kind": "property",
+                "name": "mp",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "MP atual.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              },
+              {
+                "kind": "property",
+                "name": "maxMp",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "MP máximo.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              },
+              {
+                "kind": "property",
+                "name": "position",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Posição do personagem no mapa atual, em tiles (`x`, `y`).",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "object",
+                  "members": [
+                    {
+                      "kind": "property",
+                      "name": "x",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": null,
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "y",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": null,
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "speed",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Velocidade de movimento, de `1` a `7`.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              },
+              {
+                "kind": "method",
+                "name": "distanceToPos",
+                "optional": false,
+                "jsDoc": {
+                  "description": "Distância do personagem até o ponto `(x, y)`, em tiles.",
+                  "params": {
+                    "x": "Coordenada X do ponto, em tiles.",
+                    "y": "Coordenada Y do ponto, em tiles."
+                  },
+                  "returns": null,
+                  "tags": [
+                    {
+                      "tag": "example",
+                      "text": "```js\nif (ctx.player.distanceToPos(2100, 2105) <= 5) {\n  ctx.macro.goToMarker('NEAR_FOUNTAIN');\n}\n```"
+                    }
+                  ]
+                },
+                "params": [
+                  {
+                    "name": "x",
+                    "optional": false,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "number"
+                    },
+                    "description": "Coordenada X do ponto, em tiles."
+                  },
+                  {
+                    "name": "y",
+                    "optional": false,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "number"
+                    },
+                    "description": "Coordenada Y do ponto, em tiles."
+                  }
+                ],
+                "returns": {
+                  "kind": "primitive",
+                  "name": "number"
+                }
+              },
+              {
+                "kind": "property",
+                "name": "mount",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Montaria equipada.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "object",
+                  "members": [
+                    {
+                      "kind": "property",
+                      "name": "equipped",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Se há montaria equipada.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "boolean"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "itemId",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "ID da montaria equipada.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "hp",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "HP atual da montaria.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "maxHp",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "HP máximo da montaria.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "level",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Nível da montaria.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "vitality",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Vitalidade da montaria.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "feed",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Ração restante da montaria.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "qualityLevel",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Nível de qualidade da montaria.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "equipment",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Equipamentos do personagem, separados por slot.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "object",
+                  "members": [
+                    {
+                      "kind": "property",
+                      "name": "helmet",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Capacete.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "armor",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Peitoral.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "pants",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Calça.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "gloves",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Luvas.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "boots",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Botas.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "weapon",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Arma.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "offhand",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Mão secundária.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "earring",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Brinco.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "special2",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Especial 2.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "special1",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Especial 1.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "special3",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Especial 3.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "costume",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Traje.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "fairy",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Fada.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "mount",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Montaria.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "cape",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Capa.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "necklace",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Colar.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "belt",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Cinto.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "property",
+                "name": "inventory",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "A mochila do personagem, em **4 bolsas de 15 espaços** cada (60 no\ntotal).\n\n```js\nif (!ctx.player.inventory.has(709)) ctx.macro.pause('sem poções');\n\nconst total = ctx.player.inventory.count(709); // soma a quantidade em todas as bolsas\nif (total < 50) ctx.macro.goToMarker('REFILL');\n\nconst primeira = ctx.player.inventory.find(709);\nif (primeira) ctx.log(`primeira poção: bolsa ${primeira.bag! + 1}, espaço ${primeira.slot + 1}`);\n\nconst bolsa1 = ctx.player.inventory.bags[0].slots;\nconst ocupados = bolsa1.filter((espaco) => espaco !== null).length;\nctx.log(`Bolsa 1: ${ocupados}/15 ocupados`);\n\nif (ctx.player.inventory.isFull) ctx.macro.goToMarker('VENDER');\n```",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "object",
+                  "members": [
+                    {
+                      "kind": "property",
+                      "name": "bags",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "As 4 bolsas do inventário, em ordem: `bags[0]` é a Bolsa 1, `bags[3]` é a Bolsa 4.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "array",
+                        "readonly": true,
+                        "element": {
+                          "kind": "object",
+                          "members": [
+                            {
+                              "kind": "property",
+                              "name": "index",
+                              "readonly": true,
+                              "optional": false,
+                              "jsDoc": {
+                                "description": "Número da bolsa (`0..3`, exibida como \"Bolsa 1..4\").",
+                                "params": {},
+                                "returns": null,
+                                "tags": []
+                              },
+                              "type": {
+                                "kind": "primitive",
+                                "name": "number"
+                              }
+                            },
+                            {
+                              "kind": "property",
+                              "name": "locked",
+                              "readonly": true,
+                              "optional": false,
+                              "jsDoc": {
+                                "description": "`true` quando a bolsa está bloqueada (ainda não liberada). Bolsas bloqueadas são ignoradas por `count`, `find`, `has`, `freeSlots` e `isFull`.",
+                                "params": {},
+                                "returns": null,
+                                "tags": []
+                              },
+                              "type": {
+                                "kind": "primitive",
+                                "name": "boolean"
+                              }
+                            },
+                            {
+                              "kind": "property",
+                              "name": "slots",
+                              "readonly": true,
+                              "optional": false,
+                              "jsDoc": {
+                                "description": "Os 15 espaços da bolsa; `null` é um espaço vazio.",
+                                "params": {},
+                                "returns": null,
+                                "tags": []
+                              },
+                              "type": {
+                                "kind": "array",
+                                "readonly": true,
+                                "element": {
+                                  "kind": "union",
+                                  "variants": [
+                                    {
+                                      "kind": "reference",
+                                      "name": "Item",
+                                      "typeArgs": []
+                                    },
+                                    {
+                                      "kind": "primitive",
+                                      "name": "null"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "kind": "method",
+                      "name": "count",
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Quantidade total do item, somando as bolsas desbloqueadas (pilhas\ncontam pelo tamanho).",
+                        "params": {
+                          "itemId": "O número (id) do item que você quer contar."
+                        },
+                        "returns": null,
+                        "tags": []
+                      },
+                      "params": [
+                        {
+                          "name": "itemId",
+                          "optional": false,
+                          "type": {
+                            "kind": "primitive",
+                            "name": "number"
+                          },
+                          "description": "O número (id) do item que você quer contar."
+                        }
+                      ],
+                      "returns": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "method",
+                      "name": "find",
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "O primeiro `Item` com o id indicado, na ordem das bolsas.",
+                        "params": {
+                          "itemId": "O número (id) do item que você procura."
+                        },
+                        "returns": null,
+                        "tags": []
+                      },
+                      "params": [
+                        {
+                          "name": "itemId",
+                          "optional": false,
+                          "type": {
+                            "kind": "primitive",
+                            "name": "number"
+                          },
+                          "description": "O número (id) do item que você procura."
+                        }
+                      ],
+                      "returns": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "reference",
+                            "name": "Item",
+                            "typeArgs": []
+                          },
+                          {
+                            "kind": "primitive",
+                            "name": "null"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "method",
+                      "name": "has",
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Se você tem o item.",
+                        "params": {
+                          "itemId": "O número (id) do item a verificar."
+                        },
+                        "returns": null,
+                        "tags": []
+                      },
+                      "params": [
+                        {
+                          "name": "itemId",
+                          "optional": false,
+                          "type": {
+                            "kind": "primitive",
+                            "name": "number"
+                          },
+                          "description": "O número (id) do item a verificar."
+                        }
+                      ],
+                      "returns": {
+                        "kind": "primitive",
+                        "name": "boolean"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "freeSlots",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Espaços vazios nas bolsas desbloqueadas.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "number"
+                      }
+                    },
+                    {
+                      "kind": "property",
+                      "name": "isFull",
+                      "readonly": true,
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Se a mochila está cheia.",
+                        "params": {},
+                        "returns": null,
+                        "tags": []
+                      },
+                      "type": {
+                        "kind": "primitive",
+                        "name": "boolean"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "property",
+          "name": "npcs",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "NPCs visíveis na sua tela.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "array",
+            "readonly": true,
+            "element": {
+              "kind": "reference",
+              "name": "Entidade",
+              "typeArgs": []
+            }
+          }
+        },
+        {
+          "kind": "property",
+          "name": "monsters",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Monstros perto do seu personagem (cerca de 6 tiles).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "array",
+            "readonly": true,
+            "element": {
+              "kind": "reference",
+              "name": "Entidade",
+              "typeArgs": []
+            }
+          }
+        },
+        {
+          "kind": "property",
+          "name": "otherPlayers",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Outros jogadores perto do seu personagem (cerca de 6 tiles).",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "array",
+            "readonly": true,
+            "element": {
+              "kind": "reference",
+              "name": "Entidade",
+              "typeArgs": []
+            }
+          }
+        },
+        {
+          "kind": "property",
+          "name": "macro",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Controles do próprio macro. O efeito só vale **depois** que o script termina de rodar, não na hora da chamada.",
+            "params": {},
+            "returns": null,
+            "tags": []
+          },
+          "type": {
+            "kind": "object",
+            "members": [
+              {
+                "kind": "method",
+                "name": "pause",
+                "optional": false,
+                "jsDoc": {
+                  "description": "Pausa o macro assim que o script terminar. O motivo aparece na barra de\nstatus. Se você chamar mais de uma vez, vale a última.",
+                  "params": {
+                    "reason": "Texto curto para mostrar na tela (ex.: `\"hp baixo\"`)."
+                  },
+                  "returns": null,
+                  "tags": [
+                    {
+                      "tag": "example",
+                      "text": "```js\nif (ctx.player.hp < 100) ctx.macro.pause('hp baixo');\n```"
+                    }
+                  ]
+                },
+                "params": [
+                  {
+                    "name": "reason",
+                    "optional": true,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "string"
+                    },
+                    "description": "Texto curto para mostrar na tela (ex.: `\"hp baixo\"`)."
+                  }
+                ],
+                "returns": {
+                  "kind": "primitive",
+                  "name": "void"
+                }
+              },
+              {
+                "kind": "method",
+                "name": "goToMarker",
+                "optional": false,
+                "jsDoc": {
+                  "description": "Salta a execução para o marcador com o nome informado, assim que o\nscript terminar.",
+                  "params": {
+                    "name": "Nome exato do marcador (diferencia maiúsculas de minúsculas)."
+                  },
+                  "returns": null,
+                  "tags": [
+                    {
+                      "tag": "example",
+                      "text": "```js\nif (ctx.player.hp < 100) ctx.macro.goToMarker('SAFE_AREA');\n```"
+                    }
+                  ]
+                },
+                "params": [
+                  {
+                    "name": "name",
+                    "optional": false,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "string"
+                    },
+                    "description": "Nome exato do marcador (diferencia maiúsculas de minúsculas)."
+                  }
+                ],
+                "returns": {
+                  "kind": "primitive",
+                  "name": "void"
+                }
+              },
+              {
+                "kind": "property",
+                "name": "attack",
+                "readonly": true,
+                "optional": false,
+                "jsDoc": {
+                  "description": "Controle do ataque automático do macro.",
+                  "params": {},
+                  "returns": null,
+                  "tags": []
+                },
+                "type": {
+                  "kind": "object",
+                  "members": [
+                    {
+                      "kind": "method",
+                      "name": "pause",
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Pausa o ataque automático na hora.",
+                        "params": {},
+                        "returns": null,
+                        "tags": [
+                          {
+                            "tag": "example",
+                            "text": "```js\nif (ctx.player.hp < 50) ctx.macro.attack.pause();\n```"
+                          }
+                        ]
+                      },
+                      "params": [],
+                      "returns": {
+                        "kind": "primitive",
+                        "name": "void"
+                      }
+                    },
+                    {
+                      "kind": "method",
+                      "name": "start",
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Liga de volta o ataque automático que foi pausado por `pause()`.\nNão faz nada se o ataque estiver desligado na config.",
+                        "params": {},
+                        "returns": null,
+                        "tags": [
+                          {
+                            "tag": "example",
+                            "text": "```js\nif (ctx.player.hp > 500) ctx.macro.attack.start();\n```"
+                          }
+                        ]
+                      },
+                      "params": [],
+                      "returns": {
+                        "kind": "primitive",
+                        "name": "void"
+                      }
+                    },
+                    {
+                      "kind": "method",
+                      "name": "status",
+                      "optional": false,
+                      "jsDoc": {
+                        "description": "Situação do ataque automático agora: `'running'` (atacando),\n`'paused'` (pausado por script ou pelo macro) ou `'disabled'`\n(desligado na config).",
+                        "params": {},
+                        "returns": null,
+                        "tags": [
+                          {
+                            "tag": "example",
+                            "text": "```js\nif (ctx.macro.attack.status() === 'running') ctx.log('caçando');\n```"
+                          }
+                        ]
+                      },
+                      "params": [],
+                      "returns": {
+                        "kind": "union",
+                        "variants": [
+                          {
+                            "kind": "literal",
+                            "value": "running"
+                          },
+                          {
+                            "kind": "literal",
+                            "value": "paused"
+                          },
+                          {
+                            "kind": "literal",
+                            "value": "disabled"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "property",
+          "name": "memory",
+          "readonly": true,
+          "optional": false,
+          "jsDoc": {
+            "description": "Memória compartilhada entre os scripts do macro: um script guarda um\nvalor aqui e outro script (ou o mesmo, numa volta seguinte) lê depois.\nOs valores ficam guardados até o app fechar ou você limpar — sobrevivem\na pausa, à morte e à reconexão.",
+            "params": {},
+            "returns": null,
+            "tags": [
+              {
+                "tag": "example",
+                "text": "```js\nconst voltas = (ctx.memory.get('voltas') ?? 0) + 1;\nctx.memory.set('voltas', voltas);\nctx.log(`Volta ${voltas} concluída`);\n```"
+              }
+            ]
+          },
+          "type": {
+            "kind": "object",
+            "members": [
+              {
+                "kind": "method",
+                "name": "get",
+                "optional": false,
+                "jsDoc": {
+                  "description": "Lê o valor guardado na variável. Devolve `undefined` se ela nunca foi gravada.",
+                  "params": {
+                    "chave": "Nome da variável (texto)."
+                  },
+                  "returns": null,
+                  "tags": []
+                },
+                "params": [
+                  {
+                    "name": "chave",
+                    "optional": false,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "string"
+                    },
+                    "description": "Nome da variável (texto)."
+                  }
+                ],
+                "returns": {
+                  "kind": "primitive",
+                  "name": "unknown"
+                }
+              },
+              {
+                "kind": "method",
+                "name": "set",
+                "optional": false,
+                "jsDoc": {
+                  "description": "Guarda um valor na variável, sobrescrevendo o valor anterior. Aceita\nnúmeros, textos, verdadeiro/falso, listas e objetos simples.",
+                  "params": {
+                    "chave": "Nome da variável (texto).",
+                    "valor": "Valor a guardar."
+                  },
+                  "returns": null,
+                  "tags": [
+                    {
+                      "tag": "example",
+                      "text": "```js\nctx.memory.set('ultimaCidade', 'Armia');\nctx.memory.set('chefesMortos', 0);\n```"
+                    }
+                  ]
+                },
+                "params": [
+                  {
+                    "name": "chave",
+                    "optional": false,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "string"
+                    },
+                    "description": "Nome da variável (texto)."
+                  },
+                  {
+                    "name": "valor",
+                    "optional": false,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "unknown"
+                    },
+                    "description": "Valor a guardar."
+                  }
+                ],
+                "returns": {
+                  "kind": "primitive",
+                  "name": "void"
+                }
+              },
+              {
+                "kind": "method",
+                "name": "delete",
+                "optional": false,
+                "jsDoc": {
+                  "description": "Apaga o valor guardado na variável.",
+                  "params": {
+                    "chave": "Nome da variável (texto)."
+                  },
+                  "returns": null,
+                  "tags": []
+                },
+                "params": [
+                  {
+                    "name": "chave",
+                    "optional": false,
+                    "type": {
+                      "kind": "primitive",
+                      "name": "string"
+                    },
+                    "description": "Nome da variável (texto)."
+                  }
+                ],
+                "returns": {
+                  "kind": "primitive",
+                  "name": "void"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "kind": "method",
+          "name": "log",
+          "optional": false,
+          "jsDoc": {
+            "description": "Escreve uma linha no painel de logs do macro, com o prefixo `[script]`.",
+            "params": {
+              "message": "Texto a registrar (uma linha só)."
+            },
+            "returns": null,
+            "tags": []
+          },
+          "params": [
+            {
+              "name": "message",
+              "optional": false,
+              "type": {
+                "kind": "primitive",
+                "name": "string"
+              },
+              "description": "Texto a registrar (uma linha só)."
+            }
+          ],
+          "returns": {
+            "kind": "primitive",
+            "name": "void"
+          }
+        },
+        {
+          "kind": "method",
+          "name": "alert",
+          "optional": false,
+          "jsDoc": {
+            "description": "Mostra um aviso na tela e **pausa o macro** até você clicar em **Entendi**.\n**Sempre use com `await`** — o script só continua depois do seu clique.",
+            "params": {
+              "message": "Texto a mostrar no aviso."
+            },
+            "returns": null,
+            "tags": [
+              {
+                "tag": "example",
+                "text": "```js\nawait ctx.alert('Chefe à vista! Confira o setup antes de seguir.');\nctx.macro.pause('revisar inventário');\n```"
+              }
+            ]
+          },
+          "params": [
+            {
+              "name": "message",
+              "optional": false,
+              "type": {
+                "kind": "primitive",
+                "name": "string"
+              },
+              "description": "Texto a mostrar no aviso."
+            }
+          ],
+          "returns": {
+            "kind": "promise",
+            "resolved": {
+              "kind": "primitive",
+              "name": "void"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

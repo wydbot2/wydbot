@@ -1,0 +1,97 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish_tag:
+        description: 'Existing tag to (re)publish, e.g. v0.40.1'
+        type: string
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Release PR / tag
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: rp
+
+  publish:
+    name: Build + publish GitHub Release
+    needs: release-please
+    if: >-
+      always() &&
+      ((github.event_name == 'push' && needs.release-please.outputs.release_created == 'true') ||
+      github.event_name == 'workflow_dispatch')
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+      # Rotate ONLY after smoke-testing the new seed's build — some seeds produce
+      # a broken IPC payload path; 42 is verified-good.
+      OBFUSCATE_SEED: '42'
+    steps:
+      - name: Checkout (release tag)
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.publish_tag || needs.release-please.outputs.tag_name }}
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            docs-site/package-lock.json
+
+      - name: Install root deps
+        run: npm ci
+
+      - name: Install docs-site deps
+        run: npm ci --prefix docs-site
+
+      - name: Lint (tsc + eslint + prettier)
+        run: npm run lint:all
+
+      - name: Ensure Electron binary
+        run: npm run ensure-electron
+
+      - name: Compile (electron-vite + docs)
+        run: npm run build
+
+      - name: Assert renderer obfuscation
+        run: npm run assert:renderer-protect
+
+      # Must run on Windows so the .jsc matches the shipped Electron runtime.
+      - name: Protect main (obfuscate + V8 bytecode)
+        run: npm run build:main-protect
+
+      - name: Assert main bytecode artifacts
+        run: npm run assert:main-protect
+
+      - name: Smoke test bytecode roundtrip
+        run: npm run test:bytecode
+
+      - name: Package Windows zip (full installer)
+        run: npm run pack:win-zip
+
+      - name: Upload zip to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.publish_tag || needs.release-please.outputs.tag_name }}
+          files: dist/*.zip

@@ -1,0 +1,28 @@
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: '*.{ts,tsx}'
+      run: npx eslint --fix {staged_files}
+      stage_fixed: true
+    prettier:
+      glob: '*.{ts,tsx,json,css,md,yml}'
+      run: npx prettier --write {staged_files}
+      stage_fixed: true
+    script-ctx-codegen:
+      glob:
+        - 'src/renderer/lib/script-ctx.ts'
+        - 'docs-site/guias/primeiros-passos.md'
+      run: npm run codegen:script-ctx -- --check
+
+commit-msg:
+  commands:
+    commitlint:
+      run: npx commitlint --edit {1}
+
+# Full typecheck (tsc -b, all 3 projects) — too slow for per-commit (~15-40s),
+# runs once per push instead. eslint/prettier stay in pre-commit (fast, per-file).
+pre-push:
+  commands:
+    typecheck:
+      run: npm run lint

@@ -1,0 +1,163 @@
+{
+  "name": "wydbot",
+  "version": "0.41.0",
+  "description": "WYDBot — desktop client for WYD2 with macro automation",
+  "type": "module",
+  "main": "./out/main/index.cjs",
+  "license": "MIT",
+  "author": "Daniel",
+  "keywords": [
+    "wyd2",
+    "electron",
+    "react",
+    "typescript"
+  ],
+  "scripts": {
+    "predev": "npm run docs:build",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build && npm run docs:build",
+    "ensure-electron": "npx install-electron --no",
+    "build:main-protect": "npm run ensure-electron && tsx tools/obfuscate-main.ts && tsx tools/obfuscate-preload.ts && tsx tools/compile-main-bytecode.ts",
+    "assert:main-protect": "tsx tools/assert-main-protect.ts",
+    "test:bytecode": "tsx tools/test-bytecode-roundtrip.ts",
+    "assert:renderer-protect": "tsx tools/assert-renderer-protect.ts",
+    "pack:win-dir": "electron-builder --win dir --x64 --publish=never",
+    "pack:win-zip": "electron-builder --win zip --x64 --publish=never",
+    "build:dist": "npm run build && npm run build:main-protect && npm run pack:win-zip",
+    "preview": "electron-vite preview",
+    "start": "electron-vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc -b --noEmit",
+    "lint:eslint": "eslint src/ tests/ tools/",
+    "lint:prettier": "prettier --check src/ tests/ tools/",
+    "lint:all": "npm run lint && npm run lint:eslint && npm run lint:prettier",
+    "format": "prettier --write src/ tests/ tools/",
+    "codegen:script-ctx": "tsx tools/vite-plugins/script-ctx-codegen-cli.ts",
+    "codegen:icons": "tsx tools/generate-icons.ts",
+    "docs:dev": "npm --prefix docs-site run dev",
+    "docs:build": "npm --prefix docs-site run build && tsx tools/copy-docs-site.ts",
+    "docs:preview": "npm --prefix docs-site run preview",
+    "prepare": "lefthook install"
+  },
+  "dependencies": {
+    "@electron-toolkit/utils": "^4.0.0",
+    "electron-serve": "^3.0.1",
+    "fflate": "^0.8.3",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@electron-toolkit/preload": "^3.0.2",
+    "@electron/fuses": "^2.1.1",
+    "@evilmartians/lefthook": "^2.1.2",
+    "@headlessui/react": "^2.2.10",
+    "@heroicons/react": "^2.2.0",
+    "@iconify-json/game-icons": "^1.2.4",
+    "@iconify/react": "^6.0.2",
+    "@monaco-editor/react": "^4.7.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-virtual": "^3.14.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.55.0",
+    "@typescript-eslint/parser": "^8.55.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "electron": "^42.2.0",
+    "electron-builder": "^26.7.0",
+    "electron-vite": "^5.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-boundaries": "^6.0.2",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "javascript-obfuscator": "^5.4.3",
+    "jsdom": "^28.0.0",
+    "monaco-editor": "^0.55.1",
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "quickjs-emscripten": "^0.32.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "sonner": "^2.0.7",
+    "tailwindcss": "^4.1.18",
+    "ts-morph": "^28.0.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.55.0",
+    "ulid": "^3.0.2",
+    "vitest": "^4.0.18",
+    "zustand": "^5.0.14"
+  },
+  "overrides": {
+    "dompurify": ">=3.3.4"
+  },
+  "build": {
+    "appId": "com.wydbot.electron",
+    "productName": "wyd-bot",
+    "asar": true,
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "out/**/*",
+      "!**/*.tsbuildinfo",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      },
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "afterPack": "./build/afterPack.cjs",
+    "mac": {
+      "icon": "build/icon.icns",
+      "category": "public.app-category.games",
+      "electronLanguages": [
+        "pt-BR",
+        "en"
+      ],
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "linux": {
+      "icon": "build/icon.png",
+      "target": [
+        "AppImage"
+      ],
+      "category": "Game"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+node_modules/
+out/
+dist/
+docs-site/.vitepress/dist/
+docs-site/.vitepress/cache/
+*.log
+log*.txt
+.DS_Store
+.env
+.env.*
+!.env.example
+!.claude/
+.claude/*
+!.claude/skills/
+!.claude/settings.json
+!.claude/hooks/
+.claude/settings.local.json
+.worktrees/
+.lefthook-local.yml
+
+# opencode (local agent tooling config)
+.opencode/
+opencode.json
+
+# Electron-builder resource dir — overrides global gitignore that excludes build/
+!build
+!build/**
+
+# Regenerable 100MB+ mirror (npm run re-kg:snapshot) — exceeds GitHub file limit
+tools/re-kg/snapshots/re-kg-snapshot.json

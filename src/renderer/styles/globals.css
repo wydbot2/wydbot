@@ -1,0 +1,199 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bfdbfe;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+  --color-accent-700: #1d4ed8;
+  --color-accent-800: #1e40af;
+  --color-accent-900: #1e3a8a;
+  --color-accent-950: #172554;
+
+  --animate-tab-in: tab-in 150ms ease-out;
+
+  @keyframes tab-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-player-pulse: player-pulse 1.6s ease-out infinite;
+
+  @keyframes player-pulse {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0;
+      transform: scale(1.4);
+    }
+  }
+
+  --animate-transport-swap: transport-swap 150ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes transport-swap {
+    from {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-soft-pulse: soft-pulse 1.2s ease-in-out infinite;
+
+  @keyframes soft-pulse {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  --animate-gate-pulse: gate-pulse 1.4s ease-in-out infinite;
+
+  @keyframes gate-pulse {
+    0%,
+    100% {
+      opacity: 0.5;
+      transform: scale(0.92);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+  }
+
+  --color-gold: #facc15;
+  --color-epic: #a855f7;
+  --color-good: #22d3ee;
+  --color-bad: #f87171;
+  --color-mount: #34d399;
+  --color-field: #0a0e16; /* deep window backdrop (auth + splash field) */
+
+  --animate-pp-shimmer: pp-shimmer 2.6s linear infinite;
+
+  @keyframes pp-shimmer {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(360%);
+    }
+  }
+
+  --animate-pp-ghost: pp-ghost 700ms ease-out forwards;
+
+  @keyframes pp-ghost {
+    0% {
+      opacity: 0.85;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+@utility pp-mini {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gray-400);
+}
+
+@utility pp-section {
+  display: flex;
+  flex-direction: column;
+  background: rgb(31 41 55 / 0.5);
+  border: 1px solid var(--color-gray-700);
+  border-radius: 0.5rem;
+  padding: 14px 16px;
+}
+
+@utility pp-section-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-gray-300);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  /* macOS hides the title bar (titleBarStyle: 'hidden') but keeps the
+     traffic-light buttons at the top-left (~70px cluster). Reserve left
+     clearance for the top navbar; non-darwin platforms never set this var,
+     so consumers fall back to their normal padding (a true no-op). */
+  [data-platform='darwin'] {
+    --app-titlebar-inset: 80px;
+  }
+
+  body {
+    @apply bg-gray-900 text-gray-100 antialiased;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-700 hover:bg-gray-600;
+  }
+
+  ::-webkit-scrollbar-corner {
+    @apply bg-gray-800;
+  }
+
+  ::selection {
+    @apply bg-blue-500/40;
+  }
+}
+
+/* Char-select slot: brighten the class radial glow when selected (Tailwind
+   can't swap radial-gradient stops on a data-attribute). */
+.cs-slot[data-checked] {
+  background:
+    radial-gradient(90% 120% at 0% 0%, var(--class-glow), transparent 58%), rgb(55 65 81 / 0.6);
+}
+
+/* Personagem panel: stacks the equipment column on narrow (clamped) windows. */
+.pp-grid {
+  grid-template-columns: 1fr 380px;
+}
+
+@media (max-width: 1100px) {
+  .pp-grid {
+    grid-template-columns: 1fr;
+  }
+}

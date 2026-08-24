@@ -1,0 +1,21 @@
+{
+  "name": "wydbot-docs",
+  "version": "0.1.0",
+  "description": "VitePress documentation site for the wydbot.com Script API",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "@iconify-json/game-icons": "^1.2.4",
+    "@iconify/vue": "^5.0.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "tailwindcss": "^4.1.18",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.21"
+  }
+}

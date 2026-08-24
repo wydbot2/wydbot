@@ -1,0 +1,78 @@
+/**
+ * Affect type → post-shift sprite_id in the buff icon atlas (`NewAmulOn.wyt`).
+ *
+ * The post-shift sprite arithmetic is pre-applied here:
+ *
+ * ```c
+ * if      (sprite - 0x69 < 0x30) sprite += 0x17;   // band [0x69..0x98] → [0x80..0xaf]
+ * else if (sprite - 0x99 < 0x10) sprite -= 0x29;   // band [0x99..0xa8] → [0x70..0x7f]
+ * col = sprite & 0x0F;
+ * row = sprite >> 4;
+ * ```
+ *
+ * Atlas cell = 32 × 32 px on a 16 × 16 grid. See
+ * `` §7.5.
+ *
+ * Type 0 is the wire sentinel (LUT raw value `0xFFFFFFFF`); not present here.
+ * Bound: `affect_type ∈ [1..0x35]`; outside this range, the binary skips the
+ * icon resolve and our renderer falls back to the gradient placeholder.
+ *
+ * Two affect types share a sprite (`0x21 Transformação` and `0x28 Atordoado`
+ * both resolve to `0x60` = cell `(0, 6)`). On disk the cache writes a single
+ * `060.png`; both URLs point at it.
+ */
+export const AFFECT_SPRITE_TABLE: Readonly<Record<number, number>> = {
+  0x01: 0x01, // Lentidão
+  0x02: 0x29, // Velocidade(+)
+  0x03: 0x10, // Resistência(-)
+  0x04: 0x7c, // Ataque Bônus
+  0x05: 0x8e, // Evasão(-)
+  0x06: 0x80, // Evasão(+)
+  0x07: 0x13, // Velocidade(-)
+  0x08: 0x78, // Jóia(s)
+  0x09: 0x2c, // Dano(+)
+  0x0a: 0x33, // Ataque(-)
+  0x0b: 0x2b, // Escudo Mágico
+  0x0c: 0x54, // Defesa(-)
+  0x0d: 0x0b, // Assalto
+  0x0e: 0x03, // Possuído
+  0x0f: 0x2d, // Técnica(+)
+  0x10: 0x47, // Transformação
+  0x11: 0x05, // Aura da Vida
+  0x12: 0x2e, // Controle de Mana
+  0x13: 0x4c, // Imunidade
+  0x14: 0x28, // Veneno
+  0x15: 0x4d, // Meditação
+  0x16: 0x25, // Trovão
+  0x17: 0x36, // Aura Bestial
+  0x18: 0x0d, // Samaritano
+  0x19: 0x35, // Proteção Elemental
+  0x1a: 0x59, // Evasão(+)
+  0x1b: 0x4b, // Congelamento
+  0x1c: 0x5f, // Invisibilidade
+  0x1d: 0x66, // Limite da Alma
+  0x1e: 0x7a, // Bônus PvM
+  0x1f: 0x55, // Escudo Dourado
+  0x20: 0x2f, // Cancelamento
+  0x21: 0x60, // Transformação (shares 0x60 with 0x28)
+  0x22: 0x7b, // Comida
+  0x23: 0x94, // Bônus HP/MP
+  0x24: 0x5c, // Veneno
+  0x25: 0x51, // Ligação Espectral
+  0x26: 0x57, // Troca de Espírito
+  0x27: 0x79, // Bônus EXP
+  0x28: 0x60, // Atordoado (shares 0x60 with 0x21)
+  0x29: 0x1a, // Esquiva(-)
+  0x2a: 0x90, // Magia Misteriosa
+  0x2b: 0x98, // Anti Magia
+  0x2c: 0x63, // Movimento Zero
+  0x2d: 0x89, // Congelar
+  0x2e: 0x99, // Chama Resistente
+  0x2f: 0xaa, // Sangrar
+  0x30: 0xa3, // Última Resistência
+  0x31: 0xa9, // Lucky
+  0x32: 0xb1, // RoyalArena
+  0x33: 0xb2, // Guild
+  0x34: 0xb3, // Ignite
+  0x35: 0xb4, // Sede de Vingança
+};
