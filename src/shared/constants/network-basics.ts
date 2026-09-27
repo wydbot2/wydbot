@@ -27,4 +27,4 @@ export const CLINE_VERSION_BASE = 0xfb8c; // 64396
  * `+0x301` (= 769) low build segment is stable; the high DAT segment is patched
  * in memory by the official proxy DLL.
  */
-export const ACCOUNT_CLIENT_VERSION = 0x0c9c9301;
+export const ACCOUNT_CLIENT_VERSION = 0x0c9d7301;

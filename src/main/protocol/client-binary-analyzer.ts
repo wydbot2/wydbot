@@ -48,7 +48,7 @@ export const extractAccountClientVersion = (bytes: Uint8Array): number | null =>
       bytes[i + 12] !== 0x00 ||
       bytes[i + 13] !== 0x00 ||
       bytes[i + 14] !== 0x8b ||
-      bytes[i + 15] !== 0xcf ||
+      !([0xcf, 0xce].includes(bytes[i + 15])) ||
       bytes[i + 16] !== 0xe8 ||
       bytes[i + 21] !== 0x83 ||
       bytes[i + 22] !== 0xc4 ||
@@ -58,7 +58,7 @@ export const extractAccountClientVersion = (bytes: Uint8Array): number | null =>
       bytes[i + 26] !== 0x74 ||
       bytes[i + 28] !== 0x6a ||
       bytes[i + 29] !== 0x04 ||
-      bytes[i + 30] !== 0x57
+      !([0x57, 0x56].includes(bytes[i + 30]))
     ) {
       continue;
     }

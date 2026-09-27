@@ -2,7 +2,7 @@
  * Source of truth: src/renderer/lib/script-ctx.ts (ScriptCtx interface).
  * Regenerate: npm run dev / npm run build (the Vite plugin runs automatically).
  */
- 
+/* eslint-disable */
 // prettier-ignore
 export const SCRIPT_API_DOCS_MD = `
 # wydbot.com — API de scripts de macro
